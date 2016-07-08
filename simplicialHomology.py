@@ -167,7 +167,7 @@ def boundary(toplexes,k,relative=None,km1chain=None):
                         
     return bndry,kchain
 
-def simplicialHomology(X,k,Y=None,tol=1e-5,rankOnly=False):
+def simplicialHomology(k,X,Y=None,rankOnly=False,tol=1e-5):
     """Compute relative k-homology of a simplicial complex"""
     X, Y = integerVertices(X, Y)
     X = sorted([sorted(value) for value in X])
@@ -221,7 +221,7 @@ def localHomology(k,toplexes,simplices,rankOnly=False):
     rel=[spx for spx in (ksimplices(toplexes,k)+ksimplices(toplexes,k-1)) 
          if not any([set(simplex).issubset(spx) for simplex in simplices])]
     
-    return simplicialHomology(toplexes,k,rel,1e-5,rankOnly)
+    return simplicialHomology(k,toplexes,rel,rankOnly)
 
 def localHomologyMultithread(k,cplx,numThreads):
     """Compute local homology relative to the star over a list of simplices in parallel"""
@@ -281,9 +281,10 @@ def integerVertices(cplx1, cplx2=[]):
         cplx2 = []
         
     cplx = cplx1 + cplx2
-    vertslist=list(set([v for s in cplx for v in s]))
-    cplx1 = [map(lambda x: vertslist.index(x),s) for s in cplx1]
-    cplx2 = [map(lambda x: vertslist.index(x),s) for s in cplx2]
+    vertslist=set([v for s in cplx for v in s])
+    vertsdict=dict(zip(vertslist,xrange(len(vertslist))))
+    cplx1 = [map(lambda x: vertsdict.get(x),s) for s in cplx1]
+    cplx2 = [map(lambda x: vertsdict.get(x),s) for s in cplx2]
     
     return cplx1, cplx2
 
