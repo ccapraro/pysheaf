@@ -54,19 +54,17 @@ def simpcluded(spx,simplices):
             break
         
     return isIncluded
-              
+
 def ksimplices(toplexes,k,relative=None):
     """List of k-simplices in a list of toplexes"""
-    simplices=[]
-    for toplex in toplexes:
-        ksub = (it.combinations(toplex, k+1))
-        for spx in ksub:
-            if (relative == None or tuple(spx) not in relative):
-                simplices.append(list(spx))
-                
-    simplices.sort()
-    simplices = list(k for k, _ in it.groupby(simplices))
-
+    simplices=[tuple(tup) for toplex in toplexes for tup in (it.combinations(toplex, k+1))]
+    
+    if (relative is not None):
+        relative = set(map(tuple, relative))
+        simplices = set(simplices) - relative
+        
+    simplices=[list(x) for x in set(x for x in simplices)]
+    
     return simplices
 
 def kflag(subcomplex,k,verts=None):
@@ -170,8 +168,8 @@ def boundary(toplexes,k,relative=None,km1chain=None):
 def simplicialHomology(k,X,Y=None,rankOnly=False,tol=1e-5):
     """Compute relative k-homology of a simplicial complex"""
     X, Y = integerVertices(X, Y)
-    X = sorted([sorted(value) for value in X])
-    Y = sorted([sorted(value) for value in Y])
+    X = [sorted(value) for value in X]
+    Y = [sorted(value) for value in Y]
     Y = set(map(tuple, Y))
     
     dk,km1chain=boundary(X,k,Y)
@@ -283,9 +281,9 @@ def integerVertices(cplx1, cplx2=[]):
     cplx = cplx1 + cplx2
     vertslist=set([v for s in cplx for v in s])
     vertsdict=dict(zip(vertslist,xrange(len(vertslist))))
-    cplx1 = [map(lambda x: vertsdict.get(x),s) for s in cplx1]
-    cplx2 = [map(lambda x: vertsdict.get(x),s) for s in cplx2]
-    
+    cplx1=[[vertsdict.get(v) for v in s] for s in cplx1]
+    cplx2=[[vertsdict.get(v) for v in s] for s in cplx2]
+        
     return cplx1, cplx2
 
 def vertexHoplength(toplexes,vertices,maxHoplength=None):

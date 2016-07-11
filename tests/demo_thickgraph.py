@@ -12,7 +12,7 @@ startTime = tm.time()
 random.seed(100)
 
 locations=[]
-while len(locations)<200:
+while len(locations)<100:
     loc=random.rand(2)
     if np.sqrt((loc[0]-0.5)**2+(loc[1]-0.5)**2)<0.5:
         locations.append(loc)
@@ -30,4 +30,4 @@ plt.subplot(121)
 pc.plot_complex(locations,cplx_grph,colors_grph_1)
 plt.subplot(122)
 pc.plot_complex(locations,cplx_grph,colors_grph_2)
-plt.savefig('thick_graph_para.png')
+plt.savefig('thick_graph.png')
