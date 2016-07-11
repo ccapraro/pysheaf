@@ -60,10 +60,9 @@ def ksimplices(toplexes,k,relative=None):
     simplices=[tuple(tup) for toplex in toplexes for tup in (it.combinations(toplex, k+1))]
     
     if (relative is not None):
-        relative = set(map(tuple, relative))
-        simplices = set(simplices) - relative
+        simplices = set(simplices) - set(relative)
         
-    simplices=[list(x) for x in set(x for x in simplices)]
+    simplices=[list(x) for x in set(x for x in simplices)] # not sure why this is so much faster (~5x) than simplices=[list(x) for x in simplices]
     
     return simplices
 
@@ -281,9 +280,9 @@ def integerVertices(cplx1, cplx2=[]):
     cplx = cplx1 + cplx2
     vertslist=set([v for s in cplx for v in s])
     vertsdict=dict(zip(vertslist,xrange(len(vertslist))))
-    cplx1=[[vertsdict.get(v) for v in s] for s in cplx1]
-    cplx2=[[vertsdict.get(v) for v in s] for s in cplx2]
-        
+    cplx1=[[vertsdict[v] for v in s] for s in cplx1]
+    cplx2=[[vertsdict[v] for v in s] for s in cplx2]
+    
     return cplx1, cplx2
 
 def vertexHoplength(toplexes,vertices,maxHoplength=None):
